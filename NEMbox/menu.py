@@ -626,7 +626,7 @@ class Menu:
         for i in self.storage.database['player_info']['player_list']:
             self.datalist.append(self.storage.database['songs'][i])
         self.index = self.storage.database['player_info']['idx']
-        self.offset = self.storage.database['player_info']['idx'] / self.step * self.step
+        self.offset = self.storage.database['player_info']['idx'] // self.step * self.step
         if self.resume_play:
             if self.datatype == "fmsongs":
                 self.player.end_callback = self.fm_callback
@@ -653,7 +653,7 @@ class Menu:
             for i in self.storage.database['player_info']['player_list']:
                 self.datalist.append(self.storage.database['songs'][i])
             self.index = self.storage.database['player_info']['idx']
-            self.offset = self.storage.database['player_info']['idx'] / self.step * self.step
+            self.offset = self.storage.database['player_info']['idx'] // self.step * self.step
 
     def request_api(self, func, *args):
         if self.storage.database['user']['user_id'] != "":

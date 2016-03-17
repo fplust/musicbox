@@ -38,10 +38,11 @@ class Ui:
         self.netease = NetEase()
 
         curses.start_color()
-        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
-        curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
-        curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.use_default_colors()
+        curses.init_pair(1, curses.COLOR_GREEN, -1)
+        curses.init_pair(2, curses.COLOR_CYAN, -1)
+        curses.init_pair(3, curses.COLOR_RED, -1)
+        curses.init_pair(4, curses.COLOR_YELLOW, -1)
         # term resize handling
         size = terminalsize.get_terminal_size()
         self.x = max(size[0], 10)
@@ -55,6 +56,12 @@ class Ui:
         self.storage = Storage()
         self.config = Config()
         self.newversion = False
+
+        try:
+            curses.curs_set(0)
+        except curses.error:
+            # The terminal does not supports the visibility requested.
+            pass
 
     def notify(self, summary, song, album, artist):
         if summary != "disable":
