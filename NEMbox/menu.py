@@ -18,6 +18,7 @@ import os
 import time
 import webbrowser
 import platform
+from imp import reload
 from api import NetEase
 from player import Player
 from ui import Ui
@@ -89,7 +90,7 @@ shortcut = [
 class Menu:
     def __init__(self):
         reload(sys)
-        sys.setdefaultencoding('UTF-8')
+        # sys.setdefaultencoding('UTF-8')
         self.config = Config()
         self.datatype = 'main'
         self.title = '网易云音乐'

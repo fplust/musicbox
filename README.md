@@ -1,6 +1,7 @@
 NetEase-MusicBox
 =================
 
+修改为 python3 版本
 
 #### [感谢](https://github.com/darknessomi/musicbox/graphs/contributors)为 MusicBox 的开发付出过努力的每一个人！
 
@@ -136,6 +137,8 @@ NetEase-MusicBox
 Enjoy it !
 
 ### 更新日志
+
+3016-3-17  版本 0.3.0.1    python3 版本,python2 不支持
 
 2016-03-10 版本 0.2.1.6    已知错误修复，代码优化
 

@@ -66,14 +66,16 @@ class Player:
             self.popen_handler = subprocess.Popen(para, stdin=subprocess.PIPE,
                                                   stdout=subprocess.PIPE,
                                                   stderr=subprocess.PIPE)
-            self.popen_handler.stdin.write("V " + str(self.info["playing_volume"]) + "\n")
-            self.popen_handler.stdin.write("L " + popenArgs + "\n")
+            self.popen_handler.stdin.write(bytes("V " + str(self.info["playing_volume"]) + "\n", 'ascii'))
+            self.popen_handler.stdin.write(bytes("L " + popenArgs + "\n", 'ascii'))
+            self.popen_handler.stdin.flush()
             self.process_first = True
             while (True):
                 if self.playing_flag == False:
                     break
                 try:
                     strout = self.popen_handler.stdout.readline()
+                    strout = strout.decode('utf-8')
                 except IOError:
                     break
                 if re.match("^\@F.*$", strout):
@@ -87,7 +89,8 @@ class Player:
                         self.process_location = self.process_length - process_location
                     continue
                 if strout == "@P 0\n":
-                    self.popen_handler.stdin.write("Q\n")
+                    self.popen_handler.stdin.write(bytes("Q\n", 'ascii'))
+                    self.popen_handler.stdin.flush()
                     self.popen_handler.kill()
                     break
 
@@ -232,7 +235,8 @@ class Player:
         if self.playing_flag and self.popen_handler:
             self.playing_flag = False
             try:
-                self.popen_handler.stdin.write("Q\n")
+                self.popen_handler.stdin.write(bytes("Q\n", 'ascii'))
+                self.popen_handler.stdin.flush()
             except:
                 pass
             try:
@@ -245,7 +249,8 @@ class Player:
             return
         self.pause_flag = True
         try:
-            self.popen_handler.stdin.write("P\n")
+            self.popen_handler.stdin.write(bytes("P\n", 'ascii'))
+            self.popen_handler.stdin.flush()
         except:
             self.switch()
         item = self.songs[self.info["player_list"][self.info["idx"]]]
@@ -255,7 +260,8 @@ class Player:
     def resume(self):
         self.pause_flag = False
         try:
-            self.popen_handler.stdin.write("P\n")
+            self.popen_handler.stdin.write(bytes("P\n", 'ascii'))
+            self.popen_handler.stdin.flush()
         except:
             self.switch()
         item = self.songs[self.info["player_list"][self.info["idx"]]]
@@ -383,7 +389,8 @@ class Player:
         if not self.playing_flag:
             return
         try:
-            self.popen_handler.stdin.write("V " + str(self.info["playing_volume"]) + "\n")
+            self.popen_handler.stdin.write(bytes("V " + str(self.info["playing_volume"]) + "\n", 'ascii'))
+            self.popen_handler.stdin.flush()
         except:
             self.switch()
 
@@ -394,7 +401,8 @@ class Player:
         if not self.playing_flag:
             return
         try:
-            self.popen_handler.stdin.write("V " + str(self.info["playing_volume"]) + "\n")
+            self.popen_handler.stdin.write(bytes("V " + str(self.info["playing_volume"]) + "\n", 'ascii'))
+            self.popen_handler.stdin.flush()
         except:
             self.switch()
 

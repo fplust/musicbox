@@ -36,7 +36,7 @@ args = parser.parse_args()
 if args.version:
     latest = Menu().check_version()
     curses.endwin()
-    print 'NetEase-MusicBox installed version:' + version
+    print('NetEase-MusicBox installed version:' + version)
     if latest != version:
-        print 'NetEase-MusicBox latest version:' + str(latest)
+        print('NetEase-MusicBox latest version:' + str(latest))
     sys.exit()

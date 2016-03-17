@@ -15,7 +15,7 @@ import os
 import json
 import requests
 from Crypto.Cipher import AES
-from cookielib import LWPCookieJar
+from http.cookiejar import LWPCookieJar
 from bs4 import BeautifulSoup
 import time
 import logger
@@ -62,13 +62,13 @@ pubKey = '010001'
 
 # 歌曲加密算法, 基于https://github.com/yanunon/NeteaseCloudMusic脚本实现
 def encrypted_id(id):
-    magic = bytearray('3go8&$8*3*3h0k(2)2')
-    song_id = bytearray(id)
+    magic = bytearray('3go8&$8*3*3h0k(2)2', encoding='utf-8')
+    song_id = bytearray(id, encoding='utf-8')
     magic_len = len(magic)
-    for i in xrange(len(song_id)):
+    for i in range(len(song_id)):
         song_id[i] = song_id[i] ^ magic[i % magic_len]
-    m = hashlib.md5(song_id)
-    result = m.digest().encode('base64')[:-1]
+    m = base64.b64encode(hashlib.md5(song_id).digest())
+    result = m.__str__()[2:-1]
     result = result.replace('/', '_')
     result = result.replace('+', '-')
     return result
@@ -92,18 +92,18 @@ def aesEncrypt(text, secKey):
     text = text + pad * chr(pad)
     encryptor = AES.new(secKey, 2, '0102030405060708')
     ciphertext = encryptor.encrypt(text)
-    ciphertext = base64.b64encode(ciphertext)
+    ciphertext = base64.b64encode(ciphertext).__str__()[2:-1]
     return ciphertext
 
 
 def rsaEncrypt(text, pubKey, modulus):
     text = text[::-1]
-    rs = pow(int(text.encode('hex'), 16),  int(pubKey, 16), int(modulus, 16))
+    rs = pow(int(text.encode('utf-8').hex(), 16),  int(pubKey, 16), int(modulus, 16))
     return format(rs, 'x').zfill(256)
 
 
 def createSecretKey(size):
-    return (''.join(map(lambda xx: (hex(ord(xx))[2:]), os.urandom(size))))[0:16]
+    return (''.join([hex(i)[2:] for i in os.urandom(size)]))[0:16]
 
 
 # list去重
@@ -129,7 +129,7 @@ def geturl(song):
     else:
         return song['mp3Url'], ''
 
-    quality = quality + ' {0}k'.format(music['bitrate'] / 1000)
+    quality = quality + ' {0}k'.format(music['bitrate'] // 1000)
     song_id = str(music['dfsId'])
     enc_id = encrypted_id(song_id)
     url = "http://m%s.music.126.net/%s/%s.mp3" % (random.randrange(1, 3), enc_id, song_id)
@@ -157,7 +157,7 @@ class NetEase:
         self.session.cookies = LWPCookieJar(self.storage.cookie_path)
         try:
             self.session.cookies.load()
-            self.file = file(self.storage.cookie_path, 'r')
+            self.file = open(self.storage.cookie_path, 'r')
             cookie = self.file.read()
             self.file.close()
             pattern = re.compile(r'\d{4}-\d{2}-\d{2}')
@@ -212,6 +212,7 @@ class NetEase:
 
     # 登录
     def login(self, username, password):
+        username = username.decode('utf-8')
         pattern = re.compile(r'^0\d{2,3}\d{7,8}$|^1[34578]\d{9}$')
         if (pattern.match(username)):
             return self.phone_login(username, password)
