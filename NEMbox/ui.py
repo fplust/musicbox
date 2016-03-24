@@ -219,28 +219,28 @@ class Ui:
                 for i in range(offset, iter_range):
                     # this item is focus
                     if i == index:
-                        self.screen.addstr(i - offset + 8, 0, ' ' * self.startcol)
+                        self.screen.addstr(i - offset + 9, 0, ' ' * self.startcol)
                         lead = '-> ' + str(i) + '. '
-                        self.screen.addstr(i - offset + 8, self.indented_startcol, lead, curses.color_pair(2))
+                        self.screen.addstr(i - offset + 9, self.indented_startcol, lead, curses.color_pair(2))
                         name = str(datalist[i]['song_name'] + self.space + datalist[i][
                             'artist'] + '  < ' + datalist[i]['album_name'] + ' >')
 
                         # the length decides whether to scoll
                         if truelen(name) < self.x - self.startcol - 1:
-                            self.screen.addstr(i - offset + 8, self.indented_startcol + len(lead),
+                            self.screen.addstr(i - offset + 9, self.indented_startcol + len(lead),
                                                name,
                                                curses.color_pair(2))
                         else:
                             name = scrollstring(name + '  ', start)
-                            self.screen.addstr(i - offset + 8, self.indented_startcol + len(lead),
+                            self.screen.addstr(i - offset + 9, self.indented_startcol + len(lead),
                                                str(name),
                                                curses.color_pair(2))
                     else:
-                        self.screen.addstr(i - offset + 8, 0, ' ' * self.startcol)
-                        self.screen.addstr(i - offset + 8, self.startcol,
-                                           str(str(i) + '. ' + datalist[i]['song_name'] + self.space + datalist[i][
-                                               'artist'] + '  < ' + datalist[i]['album_name'] + ' >')[:int(self.x * 2)])
-                    self.screen.addstr(iter_range - offset + 9, 0, ' ' * self.x)
+                        # self.screen.addstr(i - offset + 9, 0, ' ' * self.startcol)
+                        string = str((' ' * self.startcol) + str(i) + '. ' + datalist[i]['song_name'] + self.space + datalist[i]['artist'] + ' <' + datalist[i]['album_name'] + ' >')
+                        self.screen.addstr(i - offset + 9, 0, string)
+                self.screen.move(iter_range - offset + 9, 0)
+                self.screen.clrtobot()
 
             elif datatype == 'artists':
                 for i in range(offset, min(len(datalist), offset + step)):
@@ -254,16 +254,31 @@ class Ui:
                                                'alias'])
 
             elif datatype == 'albums':
+                iter_range = min(len(datalist), offset + step)
                 for i in range(offset, min(len(datalist), offset + step)):
                     if i == index:
-                        self.screen.addstr(i - offset + 9, self.indented_startcol,
-                                           '-> ' + str(i) + '. ' + datalist[i]['albums_name'] + self.space +
-                                           datalist[i][
-                                               'artists_name'], curses.color_pair(2))
+                        self.screen.addstr(i - offset + 9, 0, ' ' * self.startcol)
+                        lead = '-> ' + str(i) + '. '
+                        self.screen.addstr(i - offset + 9, self.indented_startcol, lead, curses.color_pair(2))
+                        name = str(datalist[i]['albums_name'] + self.space + datalist[i][
+                            'artists_name'])
+                        # the length decides whether to scoll
+                        if truelen(name) < self.x - self.startcol - 1:
+                            self.screen.addstr(i - offset + 9, self.indented_startcol + len(lead),
+                                               name,
+                                               curses.color_pair(2))
+                        else:
+                            name = scrollstring(name + '  ', start)
+                            self.screen.addstr(i - offset + 9, self.indented_startcol + len(lead),
+                                               str(name),
+                                               curses.color_pair(2))
                     else:
+                        self.screen.addstr(i - offset + 9, 0, ' ' * self.startcol)
                         self.screen.addstr(i - offset + 9, self.startcol,
-                                           str(i) + '. ' + datalist[i]['albums_name'] + self.space + datalist[i][
-                                               'artists_name'])
+                                           (str(i) + '. ' + datalist[i]['albums_name'] + self.space + datalist[i][
+                                               'artists_name'])[:int(self.x * 2)])
+                self.screen.move(iter_range - offset + 9, 0)
+                self.screen.clrtobot()
 
             elif datatype == 'playlists':
                 for i in range(offset, min(len(datalist), offset + step)):

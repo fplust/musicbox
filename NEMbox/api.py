@@ -288,7 +288,7 @@ class NetEase:
             song_ids = []
             for result in results:
                 song_ids.append(result["id"])
-            data = map(self.song_detail, song_ids)
+            data = list(map(self.song_detail, song_ids))
             result = []
             for foo in range(len(data)):
                 result.append(data[foo][0])
@@ -433,7 +433,7 @@ class NetEase:
     def songs_detail(self, ids, offset=0):
         tmpids = ids[offset:]
         tmpids = tmpids[0:100]
-        tmpids = map(str, tmpids)
+        tmpids = list(map(str, tmpids))
         action = 'http://music.163.com/api/song/detail?ids=[' + (',').join(tmpids) + ']'
         try:
             data = self.httpRequest('GET', action)
