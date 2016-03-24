@@ -671,7 +671,7 @@ class Menu:
             if data == -1:
                 return -1
             user_info = data[0]
-            self.storage.database['user']['username'] = data[1][0]
+            self.storage.database['user']['username'] = data[1][0].decode('utf-8')
             self.storage.database['user']['password'] = data[1][1]
             self.storage.database['user']['user_id'] = user_info['account']['id']
             self.storage.database['user']['nickname'] = user_info['profile']['nickname']
